@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -eu
+
+if [ $# -ne 1 ]; then
+	echo need something to play...
+	exit 1
+fi
+
+case "$1" in
+*youtu*)	ID="$(echo "$1" | sed 's/.*?.*v=\([^&]*\).*/\1/')"
+		URL="plugin://plugin.video.youtube/?action=play_video&videoid=$ID"
+		;;
+*)		URL="$1"
+		;;
+esac
+
+RESULTS="$(dig +noall +answer +additional -p 5353 @224.0.0.251 PTR _http._tcp.local)"
+TARGET="$(echo "$RESULTS" | sed -n 's/.*PTR\t*\(.*\)/\1/ p')"
+PORT="$(echo "$RESULTS" | grep -F "$TARGET" | sed -n 's/.*SRV 0 0 \([0-9]*\).*/\1/ p')"
+SERV="$(echo "$RESULTS" | grep -F "$TARGET" | sed -n 's/.*SRV 0 0 [0-9]* \(.*\)/\1/ p')"
+IP="$(echo "$RESULTS" | sed -n "/^$SERV/ s/.*\t\(.*\)/\1/ p")"
+
+cat <<EOF | curl -s -f -H 'Content-Type: application/json' --data-binary @- http://$IP:$PORT/jsonrpc \
+	| sed 's/.*"result":"\(.*\)"}/\1/'
+{
+	"jsonrpc": "2.0",
+	"id":1,
+	"method": "Player.Open",
+	"params":{
+		"item": {
+			"file": "$URL"
+		}
+	}
+}
+EOF
+
+echo
+
+exit 0
