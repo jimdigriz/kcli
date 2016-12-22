@@ -8,6 +8,8 @@ if [ $# -ne 1 ]; then
 fi
 
 case "$1" in
+STOP)		URL=http://
+		;;
 *youtu*)	ID="$(echo "$1" | sed 's/.*?.*v=\([^&]*\).*/\1/')"
 		URL="plugin://plugin.video.youtube/?action=play_video&videoid=$ID"
 		;;

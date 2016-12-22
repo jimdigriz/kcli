@@ -5,6 +5,8 @@ The usage is straight forward:
     kcli https://www.youtube.com/watch?v=whatever
     kcli http://uwstream2.somafm.com:8808
 
+    kcli STOP
+
 # Preflight
 
 Debian users will need to type:
