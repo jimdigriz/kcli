@@ -5,7 +5,7 @@ The usage is straight forward:
     kcli https://www.youtube.com/watch?v=whatever
     kcli http://uwstream2.somafm.com:8808
 
-    kcli STOP
+    kcli stop
 
 # Preflight
 
